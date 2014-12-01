@@ -6,11 +6,11 @@ errors_for_plot = [];
 % Calculate the expected asymptotic accuracy to graph later
 expected_asymptotic_accuracy = [];
 
-for nn=1:40
+for nn=1:20
 
-    num_nodes = nn * 5;
+    num_nodes = nn * 40;
     %num_queries = num_nodes * 10;
-    num_queries = 5;
+    num_queries = 1;
     gamma = 1;
     beta = .025;
     epsilon = .01;
@@ -45,7 +45,14 @@ for nn=1:40
 end
 
 plot(num_nodes_for_plot, errors_for_plot);
+xlabel('Graph size (nodes)');
+ylabel('Actual error (cut size)');
+title('MD-IDC error');
+
 plot(num_nodes_for_plot, errors_for_plot ./ expected_asymptotic_accuracy);
+xlabel('Graph size (nodes)');
+ylabel('Actual error / Expected error');
+title('MD-IDC error');
 
 end
 
