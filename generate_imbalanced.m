@@ -27,7 +27,8 @@ end
 % For the other vertices in V1, match every vertex to half of the vertices
 % in V2, determined randomly.
 for i = Asize:Vsize
-    r = randsample(Vsize, Vsize/2);
+    %r = randsample(Vsize, Vsize/2);
+    r = randperm(Vsize);
     for j = 1:Vsize/2
         mat(i,r(j)) = 1;
     end
