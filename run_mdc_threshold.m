@@ -6,10 +6,10 @@ errors_for_plot = [];
 % Calculate the expected asymptotic accuracy to graph later
 expected_asymptotic_accuracy = [];
 
-for nn=1:40
+for nn=1:20
 
     num_nodes = 20;
-    num_queries = 2;
+    num_queries = 10;
     gamma = 1;
     beta = .025;
     epsilon = .01;
@@ -44,10 +44,17 @@ for nn=1:40
 
 end
 
-plot(thresholds, errors_for_plot ./ expected_asymptotic_accuracy);
+
+plot(thresholds, errors_for_plot);
 xlabel('Threshold', 'FontWeight', 'bold');
-ylabel(strvcat('   Actual error /                         ', '   Expected error           '), 'rot', 0, 'FontWeight', 'bold');
+ylabel('Error', 'rot', 0, 'FontWeight', 'bold');
 title('MD-IDC error', 'FontWeight', 'bold', 'fontsize', 14);
+
+
+%plot(thresholds, errors_for_plot ./ expected_asymptotic_accuracy);
+%xlabel('Threshold', 'FontWeight', 'bold');
+%ylabel(strvcat('   Actual error /                         ', '   Expected error           '), 'rot', 0, 'FontWeight', 'bold');
+%title('MD-IDC error', 'FontWeight', 'bold', 'fontsize', 14);
 
 end
 
