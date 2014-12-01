@@ -1,7 +1,7 @@
 
 function [queries] = generate_some_queries(num_queries, num_nodes)
 queries = {};
-for i=1:num_queries
+for z=1:num_queries
     % Generate a new query
     subset1 = round(rand(1, num_nodes));
     subset2 = round(rand(1, num_nodes));
@@ -15,6 +15,6 @@ for i=1:num_queries
             end
         end
     end
-    queries{i} = query;
+    queries{z} = query;
 end
 end

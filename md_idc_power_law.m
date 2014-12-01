@@ -24,9 +24,9 @@ for t=0:num_queries
         query = queries{t};
         
         noise = laplacernd(0, 1/epsilon, 1);
-        %display(size(query));
-        %display(size(real_database));
-        %display(size(current_output_database));
+        display(size(query));
+        display(size(real_database));
+        display(size(current_output_database));
         noisy_difference = sign(dot(query, real_database) + noise - dot(query, current_output_database));
         sign_of_noisy_difference = sign(noisy_difference);
         

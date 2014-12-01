@@ -10,7 +10,7 @@ function [mat] = generate_power_law_graph(n, beta)
 % Initialize the adjacency matrix. The first n variables are for the
 % first half of the graph, and the second n variables are for the second
 % half.
-mat = zeros(2*n, 2*n);
+mat = zeros(n, n);
 
 power_law_coefficients = zeros(1, n);
 for k=1:n
@@ -47,9 +47,8 @@ for k=1:n
    node_degree = node_degrees(1, k);
    nodes_to_match = randperm(n);
    for l=1:node_degree
-       node_to_match = nodes_to_match(l) + n;
+       node_to_match = nodes_to_match(l);
        mat(k, node_to_match) = 1;
-       mat(node_to_match, k) = 1;
    end
 end
 
