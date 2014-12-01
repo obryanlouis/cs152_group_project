@@ -1,21 +1,20 @@
 
-function [] = run_mdc() 
+function [] = run_mdc_threshold() 
 
-num_nodes_for_plot = [];
+thresholds = [];
 errors_for_plot = [];
 % Calculate the expected asymptotic accuracy to graph later
 expected_asymptotic_accuracy = [];
 
-for nn=1:20
+for nn=1:40
 
-    num_nodes = nn * 40;
-    %num_queries = num_nodes * 10;
-    num_queries = 1;
+    num_nodes = 20;
+    num_queries = 2;
     gamma = 1;
     beta = .025;
     epsilon = .01;
     p_beta = 1.25;
-    threshold = 1;
+    threshold = nn * .1;
     
     delta = 0.1; % A privacy parameter that we set arbitrarily. Higher values mean lower privacy but higher accuracy.
     input_database = generate_power_law_graph(num_nodes, p_beta);
@@ -32,7 +31,7 @@ for nn=1:20
     zeta = num_nodes ^ 2;
     max_potentia = sum(sum(input_database));
     
-    num_nodes_for_plot = [num_nodes_for_plot, num_nodes];
+    thresholds = [thresholds, threshold];
     errors_for_plot = [errors_for_plot, error];
     s = 2;
     factor_1 = log(num_queries / beta)^(2 / (s + 2));
@@ -45,13 +44,8 @@ for nn=1:20
 
 end
 
-plot(num_nodes_for_plot, errors_for_plot);
-xlabel('Graph size (nodes)');
-ylabel('Actual error (cut size)', 'rot', -90);
-title('MD-IDC error');
-
-plot(num_nodes_for_plot, errors_for_plot ./ expected_asymptotic_accuracy);
-xlabel('Graph size (nodes)', 'FontWeight', 'bold');
+plot(thresholds, errors_for_plot ./ expected_asymptotic_accuracy);
+xlabel('Threshold', 'FontWeight', 'bold');
 ylabel(strvcat('   Actual error /                         ', '   Expected error           '), 'rot', 0, 'FontWeight', 'bold');
 title('MD-IDC error', 'FontWeight', 'bold', 'fontsize', 14);
 
