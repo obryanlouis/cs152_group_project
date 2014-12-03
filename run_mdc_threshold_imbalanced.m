@@ -14,7 +14,7 @@ for nn=1:20
     beta = .025;
     epsilon = .01;
     p_beta = 1.25;
-    threshold = nn * .1;
+    threshold = nn * 1;
     
     delta = 0.1; % A privacy parameter that we set arbitrarily. Higher values mean lower privacy but higher accuracy.
     input_database = generate_imbalanced(num_nodes);

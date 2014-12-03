@@ -7,23 +7,25 @@ mw_errors_for_plot = [];
 % % Calculate the expected asymptotic accuracy to graph later
 % expected_asymptotic_accuracy = [];
 
-for nn=1:5
+for nn=1:10
 
-    num_nodes = nn * 20;
+    num_nodes = nn * 4;
     %num_queries = num_nodes * 10;
     num_queries = 1;
+    cut_size = num_nodes / 2;
     gamma = 1;
-    beta = .01;
-    epsilon = .01;
+    beta = .1;
+    epsilon = .5;
     p_beta = 1.25;
     q = log(num_nodes);
     zeta = num_nodes ^ (2 / q);
     p = log(num_nodes) / (log(num_nodes) - 1);
-    delta = 0.1; % A privacy parameter that we set arbitrarily. Higher values mean lower privacy but higher accuracy.
+    delta = 0.3; % A privacy parameter that we set arbitrarily. Higher values mean lower privacy but higher accuracy.
     
     input_database = generate_imbalanced(num_nodes);
     reshaped_input_database = reshape(input_database, [num_nodes ^ 2, 1]);
-    queries = generate_some_queries(num_queries, num_nodes);
+    %queries = generate_some_queries(num_queries, num_nodes);
+    queries = generate_sized_queries(num_queries, num_nodes, cut_size);
     % MD-IDC output database
     output_database = md_idc_power_law(input_database, epsilon, num_nodes, queries, p, beta, delta);
     % Multiplicative weights output database
