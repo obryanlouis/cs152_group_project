@@ -1,19 +1,21 @@
-function [output_database] = multiplicative_weights(input_database, epsilon, queries, num_nodes, threshold)
+function [output_database] = multiplicative_weights(input_database, epsilon, queries, num_nodes, beta, delta)
 
 num_queries = numel(queries);
 real_database = input_database;
 num_entries = num_nodes^2;
 real_database = reshape(real_database, [num_entries, 1]);
 output_database = ones(num_entries, 1) / (num_entries);
-step_size = 1.65; % something
+step_size = sqrt((sqrt(num_nodes)* log(num_queries / beta) * log(1 / delta))/(epsilon * num_entries));
+sigma = 10 * step_size / log(num_queries / beta);
+threshold = 40 * step_size;
 
 for t=1:num_queries
     query = queries{t};
-    noise = laplacernd(0, 1/epsilon, 1); 
+    noise = laplacernd(0, sigma, 1); 
     display(size(query));
     display(size(real_database));
     display(size(output_database));
-    noisy_difference = dot(query, real_database) + noise - dot(query, output_database);
+    noisy_difference = dot(query, output_database) - (dot(query, real_database) + noise);
     if abs(noisy_difference) > threshold
         rt = zeros(num_entries, 1);
         for j=1:(num_entries)
