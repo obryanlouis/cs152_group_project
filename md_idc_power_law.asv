@@ -58,7 +58,7 @@ function [output]= group_norm(database, p, q, num_nodes)
 
 sum = 0;
 for i=1:num_nodes
-    sum = sum + pow_p(norm(database((i-1)*num_nodes + 1:i * num_nodes, 1), p), q);
+    sum = sum + power(q, norm(database((i-1)*num_nodes + 1:i * num_nodes, 1), p));
 end
 output = sum^(1/q);
 

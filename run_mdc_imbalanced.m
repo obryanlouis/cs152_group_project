@@ -14,13 +14,11 @@ for nn=1:10
     num_queries = 1;
     cut_size = num_nodes / 2;
     gamma = 1;
-    beta = .1;
-    epsilon = .5;
+    beta = .01;
+    epsilon = .005;
     p_beta = 1.25;
-    q = log(num_nodes);
-    zeta = num_nodes ^ (2 / q);
-    p = log(num_nodes) / (log(num_nodes) - 1);
-    delta = 0.3; % A privacy parameter that we set arbitrarily. Higher values mean lower privacy but higher accuracy.
+    p = log(num_nodes)  / (log(num_nodes) - 1);
+    delta = 0.003; % A privacy parameter that we set arbitrarily. Higher values mean lower privacy but higher accuracy.
     
     input_database = generate_imbalanced(num_nodes);
     reshaped_input_database = reshape(input_database, [num_nodes ^ 2, 1]);
@@ -84,7 +82,7 @@ legend('Mirror Descent', 'Multiplicative Weights', 'Location', 'northwest');
 xlabel('Graph size (nodes)', 'FontWeight', 'bold');
 ylabel('Error', 'rot', 0, 'FontWeight', 'bold');
 title('MD-IDC vs MW-IDC Error by Graph Size', 'FontWeight', 'bold', 'fontsize', 14);
-set(handle, 'linewidth', 5);
+set(handle, 'linewidth', 2);
 
 end
 
