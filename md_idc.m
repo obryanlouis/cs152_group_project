@@ -27,14 +27,14 @@ M = 2 * num_nodes;
    % num_nodes is the number of nodes in each of the halves of the
    % bi-partite graph)
 k = num_queries;
-B = 9; % DEBUG
+% As the paper did not specify an update bound for OQR, we use a value that
+% works more or less for our data.
+B = 20; 
 epsilon_0 = epsilon  / ( 100 * sqrt(B) * log ( 4 / delta ) );
 T = 4 / epsilon_0 * log(2 * k / beta);
-T = 10; % DEBUG
 maximal_query = ones(num_nodes^2, 1);
 zeta = norm(maximal_query, 2);
 step_size = T / 8 / (zeta^2);
-step_size = 2; % DEBUG
 
 
 % Initialize a counter for the update bound
@@ -86,6 +86,6 @@ function [output] = group_norm(database, p, q, num_nodes)
 
 reshaped_database = reshape(database, [num_nodes, num_nodes]);
 norms1 = norms(reshaped_database, p, 2);
-output = sum(norms1);
+output = norm(norms1, q);
 
 end

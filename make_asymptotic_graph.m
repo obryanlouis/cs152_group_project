@@ -1,5 +1,5 @@
 
-function [] = test() 
+function [] = make_asymptotic_graph() 
 
 num_nodes_for_plot = [];
 md_errors_for_plot = [];
@@ -15,24 +15,20 @@ for nn=1:20
     
     % While we have yet to succeed for this database size
     while successful == 0 
-       try
+       %try
     
             num_nodes = nn * 4; 
-            %num_queries = num_nodes * 10;
             num_queries = 30;
             cut_size = min(10, num_nodes);
             beta = .1;
             epsilon = .01;
-            p_beta = 1.25;
-            %p = log(num_nodes)  / (log(num_nodes) - 1);
-            delta = 0.1; % A privacy parameter that we set arbitrarily. Higher values mean lower privacy but higher accuracy.
+            delta = 0.1;
 
             input_database = generate_imbalanced(num_nodes);
             reshaped_input_database = reshape(input_database, [num_nodes ^ 2, 1]);
-            %queries = generate_some_queries(num_queries, num_nodes);
             queries = generate_sized_queries(num_queries, num_nodes, cut_size);
             % MD-IDC output database
-            md_answers = md_idc_power_law(epsilon, delta, beta, queries, input_database, num_nodes);
+            md_answers = md_idc(epsilon, delta, beta, queries, input_database, num_nodes);
             
             md_error = 0;
             for i=1:num_queries
@@ -60,12 +56,13 @@ for nn=1:20
             successful = 1;
 
     
-       catch
-       end
+       %catch
+       %end
     end
     
 end
 
+% Now calculate the ratios of the real error to the asymptotic error
 values_to_plot = md_errors_for_plot;
 [~, num_vals] = size(values_to_plot);
 for i=1:num_vals
