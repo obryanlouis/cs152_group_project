@@ -27,15 +27,15 @@ M = 2 * num_nodes;
    % num_nodes is the number of nodes in each of the halves of the
    % bi-partite graph)
 k = num_queries;
-mw_step_size = ((sqrt(log(M)) * log(k / beta) * log(1 / delta))/(epsilon * n))^(1/2);
-T = 40 * mw_step_size;
-maximal_query = ones(num_nodes^2, 1);
-p_star = p / (p - 1);
-zeta = group_norm(maximal_query, 2, p_star, num_nodes);
-step_size = T / 8 / (zeta^2);
-max_potential = norm(maximal_query, 2)^2;
-B = 8 * zeta^2 / (T^2) * max_potential;
+B = 15; % DEBUG
 epsilon_0 = epsilon  / ( 100 * sqrt(B) * log ( 4 / delta ) );
+T = 4 / epsilon_0 * log(2 * k / beta);
+T = 30; % DEBUG
+maximal_query = ones(num_nodes^2, 1);
+zeta = norm(maximal_query, 2);
+step_size = T / 8 / (zeta^2);
+step_size = 1; % DEBUG
+
 
 % Initialize a counter for the update bound
 counter = 0;
@@ -46,7 +46,6 @@ for t=1:num_queries
     % True response
     query = queries{t};
     a_t = dot(query, real_database);
-    query = queries{t};
     % Noisy response
     hat_a_t = a_t + A_t;
     % Current output
@@ -55,6 +54,12 @@ for t=1:num_queries
     noisy_difference = hat_a_t - current_output;
     % If the absolute value of the noisy response exceeds the threshold
     if abs(noisy_difference) > T
+        % Increment the counter
+        counter = counter + 1;
+        if counter > B
+           ex = MException('IDC:mirrorDescent', 'Mirror Descent failed.');
+           throw(ex);
+        end
         % Update the database
         sign_of_noisy_difference = sign(noisy_difference);
         cvx_begin
@@ -65,12 +70,6 @@ for t=1:num_queries
         cvx_end
         current_output_database = x;        
         
-        % Increment the counter
-        counter = counter + 1;
-        if counter > B
-           ex = MException('IDC:mirrorDescent', 'Mirror Descent failed.');
-           throw(ex);
-        end
         % Output the noisy answer as the query response
         answers(t) = hat_a_t;
     else

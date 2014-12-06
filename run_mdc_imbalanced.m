@@ -8,7 +8,7 @@ max_errors_for_plot = [];
 % % Calculate the expected asymptotic accuracy to graph later
 % expected_asymptotic_accuracy = [];
 
-for nn=1:10
+for nn=1:5
 
     % Initialize a variable that determines whether both MW-IDC and MD-IDC
     % are successful
@@ -18,15 +18,15 @@ for nn=1:10
     while successful == 0 
        try
     
-            num_nodes = nn * 4;
+            num_nodes = nn * 4; 
             %num_queries = num_nodes * 10;
-            num_queries = 5;
-            cut_size = num_nodes / 2;
+            num_queries = 30;
+            cut_size = min(10, num_nodes);
             beta = .1;
-            epsilon = .5;
-            %p_beta = 1.25;
+            epsilon = .1;
+            p_beta = 1.25;
             %p = log(num_nodes)  / (log(num_nodes) - 1);
-            delta = 0.3; % A privacy parameter that we set arbitrarily. Higher values mean lower privacy but higher accuracy.
+            delta = 0.1; % A privacy parameter that we set arbitrarily. Higher values mean lower privacy but higher accuracy.
 
             input_database = generate_imbalanced(num_nodes);
             reshaped_input_database = reshape(input_database, [num_nodes ^ 2, 1]);
@@ -80,10 +80,10 @@ end
 
 
 handle = plot(num_nodes_for_plot, md_errors_for_plot, num_nodes_for_plot, mw_errors_for_plot);
-legend('Mirror Descent', 'Multiplicative Weights', 'Max Poss Error', 'Location', 'northwest');
+legend('Mirror Descent', 'Multiplicative Weights', 'Location', 'northwest');
 xlabel('Graph size (nodes)', 'FontWeight', 'bold');
 ylabel('Error', 'rot', 0, 'FontWeight', 'bold');
-title('MD-IDC vs MW-IDC Error by Graph Size', 'FontWeight', 'bold', 'fontsize', 14);
+title('MD-IDC vs MW-IDC Error for Imbalanced Graphs', 'FontWeight', 'bold', 'fontsize', 14);
 set(handle, 'linewidth', 2);
 
 end

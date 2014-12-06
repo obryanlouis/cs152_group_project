@@ -10,7 +10,8 @@ answers = zeros(num_queries, 1);
 w = zeros(num_queries, 1);
 
 % Set y0[i] = x0[i] = 1/M for all i ? V
-current_output_database = (1/num_nodes^2) * ones(num_nodes^2, 1);
+S = sum(sum(input_database));
+current_output_database = (S/num_nodes^2) * ones(num_nodes^2, 1);
 
 % Set the step size, threshold, and noise parameters
 n = num_nodes^2;
@@ -22,6 +23,14 @@ k = num_queries;
 step_size = ((sqrt(log(M)) * log(k / beta) * log(1 / delta))/(epsilon * n))^(1/2);
 sigma = 10 * step_size / log ( k / beta );
 T = 40 * step_size;
+% Set the failure bound
+B = step_size^(-2) * log(2 * M); 
+
+% DEBUG
+T = 50;
+B = 15;
+step_size = 1;
+
 
 % In each round t ? 1,2...,k when receiving a linear query ft do the following:
 for t=1:num_queries
@@ -56,8 +65,8 @@ for t=1:num_queries
        % "failure". Otherwise, output the noisy answer \hat{a}_t and
        % proceed to the next iteration
        failure_sum = sum(w(1:t));
-       failure_bound = step_size^(-2) * log(2 * M); 
-       if failure_sum > failure_bound
+       
+       if failure_sum > B
            ex = MException('IDC:multiplicativeWeights', 'Multiplicative Weights failed.');
            throw(ex);
        else
