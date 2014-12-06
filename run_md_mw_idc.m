@@ -1,5 +1,5 @@
 
-function [] = run_mdc_imbalanced() 
+function [] = run_md_mw_idc() 
 
 num_nodes_for_plot = [];
 md_errors_for_plot = [];
@@ -33,9 +33,9 @@ for nn=1:5
             %queries = generate_some_queries(num_queries, num_nodes);
             queries = generate_sized_queries(num_queries, num_nodes, cut_size);
             % Multiplicative weights 
-            mw_answers = hr_multiplicative_weights(epsilon, delta, beta, queries, reshaped_input_database, num_nodes);
+            mw_answers = mw_idc(epsilon, delta, beta, queries, reshaped_input_database, num_nodes);
             % MD-IDC output database
-            md_answers = md_idc_power_law(epsilon, delta, beta, queries, input_database, num_nodes);
+            md_answers = md_idc(epsilon, delta, beta, queries, input_database, num_nodes);
             %output_database = test(input_database, epsilon, num_nodes, queries, p, beta, delta);
             
             

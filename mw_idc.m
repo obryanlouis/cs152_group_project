@@ -1,4 +1,4 @@
-function [answers] = hr_multiplicative_weights(epsilon, delta, beta, queries, input_database, num_nodes)
+function [answers] = mw_idc(epsilon, delta, beta, queries, input_database, num_nodes)
 
 % Get the number of queries
 num_queries = numel(queries);
@@ -10,7 +10,8 @@ answers = zeros(num_queries, 1);
 w = zeros(num_queries, 1);
 
 % Set y0[i] = x0[i] = 1/M for all i ? V
-current_output_database = (1/num_nodes^2) * ones(num_nodes^2, 1);
+S = sum(sum(input_database));
+current_output_database = (S/num_nodes^2) * ones(num_nodes^2, 1);
 
 % Set the step size, threshold, and noise parameters
 n = num_nodes^2;
@@ -22,6 +23,14 @@ k = num_queries;
 step_size = ((sqrt(log(M)) * log(k / beta) * log(1 / delta))/(epsilon * n))^(1/2);
 sigma = 10 * step_size / log ( k / beta );
 T = 40 * step_size;
+% Set the failure bound
+B = step_size^(-2) * log(2 * M); 
+
+% DEBUG
+T = 50;
+B = 15;
+step_size = 1;
+
 
 % In each round t ? 1,2...,k when receiving a linear query ft do the following:
 for t=1:num_queries
@@ -31,11 +40,11 @@ for t=1:num_queries
    a_t = dot(query, input_database) + A_t;
    % Compute the difference \hat{d}_t ? f_t(x_{t?1}) ? \hat{a}_t
    current_output = dot(query, current_output_database);
-   d_t =  - a_t;
+   d_t = current_output - a_t;
    % If \hat{d}_t <= T then set wt ? 0, xt ? xt?1, output f_t(x_{t?1}), and proceed to the next iteration.
-   if d_t <= T
+   if abs(d_t) <= T
        w(t) = 0;
-       answers(t) = d_t;
+       answers(t) = current_output;
    else
        y = zeros(num_nodes^2, 1);
        % If ]hat{d}_t > T then set wt ? 1 and:
@@ -43,7 +52,7 @@ for t=1:num_queries
        % for all i ? V , update
        for i=1:num_nodes^2
            % y_t[i] ? x_{t?1}[i] · exp(?? ·rt[i]),
-           r = query{i};
+           r = query(i);
            if d_t > 0
                r = 1 - query{i};
            end
@@ -56,9 +65,10 @@ for t=1:num_queries
        % "failure". Otherwise, output the noisy answer \hat{a}_t and
        % proceed to the next iteration
        failure_sum = sum(w(1:t));
-       failure_bound = step_size^(-2) * log(2 * M); 
-       if failure_sum > failure_bound
-           throw('Multiplicative Weights has failed.');
+       
+       if failure_sum > B
+           ex = MException('IDC:multiplicativeWeights', 'Multiplicative Weights failed.');
+           throw(ex);
        else
            answers(t) = a_t;
        end

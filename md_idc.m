@@ -1,6 +1,6 @@
 % This script runs the MD-IDC algorithm on a graph
 
-function [answers] = md_idc_power_law(epsilon, delta, beta, queries, input_database, num_nodes)
+function [answers] = md_idc(epsilon, delta, beta, queries, input_database, num_nodes)
 
 % Set the norm parameter
 p = 2;
@@ -27,14 +27,14 @@ M = 2 * num_nodes;
    % num_nodes is the number of nodes in each of the halves of the
    % bi-partite graph)
 k = num_queries;
-B = 15; % DEBUG
+B = 9; % DEBUG
 epsilon_0 = epsilon  / ( 100 * sqrt(B) * log ( 4 / delta ) );
 T = 4 / epsilon_0 * log(2 * k / beta);
-%T = 30; % DEBUG
+T = 10; % DEBUG
 maximal_query = ones(num_nodes^2, 1);
 zeta = norm(maximal_query, 2);
 step_size = T / 8 / (zeta^2);
-%step_size = 1; % DEBUG
+step_size = 2; % DEBUG
 
 
 % Initialize a counter for the update bound
@@ -66,7 +66,7 @@ for t=1:num_queries
             variable x(n)
             minimize( square_pos(norm(x, p)) - square_pos(norm(current_output_database, p)) - dot(2 * current_output_database, x - current_output_database) - step_size * sign_of_noisy_difference * dot(query, x - current_output_database)  )
             subject to
-                norm(x) <= norm_of_real_database
+                norm(x, p) <= norm_of_real_database
         cvx_end
         current_output_database = x;        
         
@@ -89,4 +89,3 @@ norms1 = norms(reshaped_database, p, 2);
 output = sum(norms1);
 
 end
-
