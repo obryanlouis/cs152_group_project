@@ -30,11 +30,11 @@ k = num_queries;
 B = 15; % DEBUG
 epsilon_0 = epsilon  / ( 100 * sqrt(B) * log ( 4 / delta ) );
 T = 4 / epsilon_0 * log(2 * k / beta);
-T = 30; % DEBUG
+%T = 30; % DEBUG
 maximal_query = ones(num_nodes^2, 1);
 zeta = norm(maximal_query, 2);
 step_size = T / 8 / (zeta^2);
-step_size = 1; % DEBUG
+%step_size = 1; % DEBUG
 
 
 % Initialize a counter for the update bound
